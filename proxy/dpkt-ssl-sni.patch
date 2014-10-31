@@ -1,0 +1,163 @@
+--- ssl.py	2014-10-30 04:01:02.852631194 +0000
++++ ssl-sni.py	2014-10-30 04:01:02.852631194 +0000
+@@ -135,6 +135,119 @@
+ # don't forget, you have to pad a 3-byte value with \x00
+ _SIZE_FORMATS = ['!B', '!H', '!I', '!I']
+ 
++#===mod=================================================================
++
++EXTENSIONS_TXT = {
++    0x0000:     'ServerNameIndication',
++    0x0001:     'max_fragment_length',
++    0x0002:     'max_fragment_length',
++    0x0003:     'trusted_ca_keys',
++    0x0004:     'truncated_hmac',
++    0x0005:     'status_request',
++    0x0006:     'user_mapping',
++    0x0007:     'client_authz',
++    0x0008:     'server_authz',
++    0x0009:     'cert_type',
++    0x000a:     'EllipticCurves',
++    0x000b:     'ECPointFormats',
++    0x000c:     'srp',
++    0x000d:     'signature_algorithms',
++    0x000e:     'use_srtp',
++    0x0023:     'SessionTicketTLS',
++    0x3374:     'TlsNPN_SPDY_Chrome',
++    0xff01:     'RenegotiationInfo'
++}
++EXTENSIONS_VAL = dict([(y, x) for x, y in EXTENSIONS_TXT.iteritems()])
++
++class TLSExtension:
++    """
++    Encapsulates a TLS extension.
++    """
++    
++    def __init__(self, type, data, position=None):
++        self.type = type
++        self.data = data
++        self.position = position
++
++    def getName(self):
++        return str(EXTENSIONS_TXT.get(self.type, self.type))
++
++    def getData(self):
++        return self.data
++
++    def getPosition(self):
++        return self.position
++        
++    def __repr__(self):
++        return self.getName()
++
++    def to_text(self):
++        return self.getName() + ': data=%s' % (binascii.hexlify(self.data))
++
++class ServerNameIndication(TLSExtension):
++    """
++    ServerNameIndication is a TLS extension.
++    In order to provide the server name, clients MAY include an extension
++    of type "server_name" in the (extended) client hello.  The
++    "extension_data" field of this extension SHALL contain
++    "ServerNameList" where:
++
++      struct {
++          NameType name_type;
++          select (name_type) {
++              case host_name: HostName;
++          } name;
++      } ServerName;
++
++      enum {
++          host_name(0), (255)
++      } NameType;
++
++      opaque HostName<1..2^16-1>;
++
++      struct {
++          ServerName server_name_list<1..2^16-1>
++      } ServerNameList;
++
++    Currently the only server names supported are DNS hostnames, however
++    this does not imply any dependency of TLS on DNS, and other name
++    types may be added in the future (by an RFC that Updates this
++    document).  TLS MAY treat provided server names as opaque data and
++    pass the names and types to the application.
++    """
++
++    def __init__(self, type, data, position=None):
++        self.type = type
++        self.data = []
++        self.position = position
++
++        # example for an encoded sni:
++        #   '\x00\x15\x00\x00\x12addons.mozilla.org'
++        (servernamelist, snl_len) = parse_variable_array(data, 2)
++        bytesconsumed = 0
++        while bytesconsumed < snl_len-2:
++            name_type = servernamelist[bytesconsumed]
++            (hostname, hnlen) = parse_variable_array(servernamelist[bytesconsumed+1:], 2)
++            self.data.append(hostname)
++            bytesconsumed += 1+hnlen
++
++
++    def getData(self):
++        """
++        ServerNameIndication may have several hostnames, but getData() only 
++        returns a comma-separated string for all hostnames. Mostly it is just
++        one hostname.
++        """
++        return ','.join(self.data)
++
++    def __repr__(self):
++        return self.to_text()
++
++    def to_text(self):
++        return self.getName() + ': data=%s' % (self.getData())
++
++#===mod=================================================================
++
+ def parse_variable_array(buf, lenbytes):
+     """
+     Parse an array described using the 'Type name<x..y>' syntax from the spec
+@@ -247,7 +360,34 @@
+         self.num_compression_methods = parsed - 1
+         self.compression_methods = map(ord, compression_methods)
+         # extensions
+-
++        #===mod=================================================================
++        self.extensions = []
++        encodedexts = self.data[pointer:]
++        #print binascii.hexlify(encodedexts)
++        if len(encodedexts) <= 0:
++            return
++        
++        # there are extensions, let's try to parse them.
++        # if parsing fails, treat it as nonfatal parsing error
++        extposition = 1
++        try:
++            self.extbytes = struct.unpack('!H', self.data[pointer:pointer+2])[0]
++            pointer += 2
++            extbytesconsumed = 0
++            while extbytesconsumed < self.extbytes:
++                extype = struct.unpack('!H', self.data[pointer:pointer+2])[0]
++                pointer += 2
++                (exdata, exlen) = parse_variable_array(self.data[pointer:], 2)
++                extension = TLSExtension(extype, exdata, position=extposition)
++                if extension.getName() == 'ServerNameIndication':
++                    extension = ServerNameIndication(extype, exdata, position=extposition)
++                self.extensions.append( extension )
++                pointer += exlen
++                extbytesconsumed += 2+exlen
++                extposition += 1
++        except:
++            raise
++        #===mod=================================================================
+ 
+ class TLSServerHello(dpkt.Packet):
+     __hdr__ = (
+@@ -554,3 +694,4 @@
+ 
+ if __name__ == '__main__':
+     unittest.main()
++

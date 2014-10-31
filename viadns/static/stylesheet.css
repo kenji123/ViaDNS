@@ -1,0 +1,158 @@
+@font-face {
+    font-family: 'TitanOneRegular';
+    src: url('titan-one-fontfacekit/TitanOne-Regular-webfont.eot');
+    src: url('titan-one-fontfacekit/TitanOne-Regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('titan-one-fontfacekit/TitanOne-Regular-webfont.woff') format('woff'),
+         url('titan-one-fontfacekit/TitanOne-Regular-webfont.ttf') format('truetype'),
+         url('titan-one-fontfacekit/TitanOne-Regular-webfont.svg#TitanOneRegular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+body {
+	margin: 0;
+	background-color: #EDEDED;
+	font-family: Tahoma, Geneva, sans-serif;
+	line-height: 1.5;
+}
+
+body a {
+	text-decoration: none;
+	color: #155DB0;
+}
+
+body a:hover {
+	color: #888;
+}
+
+.top-bg {
+	background-image: url('bg.png');
+	height: 250px;
+}
+
+.top-bg div {
+	margin: 0 auto;
+	width: 960px;
+	text-align: center;
+}
+
+.top-bg div.logo {
+	font-family: 'TitanOneRegular';
+	font-size: 80px;
+	color: #EDEDED;
+	text-shadow: 3px 0 1px rgba(0, 0, 0, 0.5);
+	line-height: 180px;
+}
+
+.actions a {
+	padding: 5px 25px 5px 25px;
+	border-radius: 2px;
+	background-color: #EDEDED;
+	color: #000;
+	font-size: 18px;
+	font-weight: bold;
+}
+
+.actions a:hover {
+	color: #000;
+	background-color: #D7D7D7;
+}
+
+.bottom-bg {
+	padding-top: 20px;
+}
+
+.bottom-bg div.info {
+	margin: 0 auto;
+	padding-bottom: 50px;
+	width: 960px;
+	text-align: center;
+}
+
+.info-block {
+	margin: 0 auto;
+	padding: 0 5px 0 5px;
+	width: 300px;
+	display: inline-block;
+	text-align: left;
+	vertical-align: top;
+}
+
+.info-block-header {
+	padding-bottom: 5px;
+	font-family: 'TitanOneRegular';
+	font-size: 24px;
+	text-align: center;
+}
+
+.nav-bg {
+	background-image: url('bg.png');
+	height: 50px;
+}
+
+.nav-content {
+	margin: 0 auto;
+	padding: 5px 15px 5px 15px;
+	width: 960px;
+	font-size: 24px;
+	color: #EDEDED;
+	text-shadow: 1px 0 1px rgba(0, 0, 0, 0.5);
+}
+
+.nav-content a {
+	color: #EDEDED;
+}
+
+.content-bg {
+	clear: both;
+	padding-top: 20px;
+}
+
+.login-form, .signup-form {
+	margin: 0 auto;
+	width: 960px;
+}
+
+.signup-form form {
+	margin: 0 auto;
+	width: 340px;
+}
+
+.login-form form {
+	margin: 0 auto;
+	width: 225px;
+}
+
+.login-form form th, .signup-form form th {
+	text-align: right;
+}
+
+.nav-content div.logo {
+	font-family: 'TitanOneRegular';
+	font-size: 30px;
+	text-shadow: 3px 0 1px rgba(0, 0, 0, 0.5);
+	float: left;
+	display: inline-block;
+}
+
+.acc-ctrls {
+	float: right;
+	display: inline-block;
+}
+
+.acc-ctrls .logout {
+	color: #CC033C;
+}
+
+.acc-ctrls .logout:hover {
+	color: #FFF;
+}
+
+.dash {
+	margin: 0 auto;
+	padding: 20px;
+	width: 500px;
+	background-color: #FFF;
+	box-shadow: 0 0 1px 1px rgba(0, 0, 0, 0.5);
+	border-radius: 4px;
+}

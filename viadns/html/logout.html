@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<meta http-equiv="refresh" content="5;URL=/projects-resos/viadns/" />  
+		
+		<title>ViaDNS | {% if success %}Logged Out{% else %}Log Out{% endif %}</title>
+		
+		<link type="text/css" rel="stylesheet" href="static/stylesheet.css" />
+	</head>
+	<body>
+		<div class="nav-bg">
+			<div class="nav-content">
+				<div class="logo">ViaDNS</div>
+			</div>
+		</div>
+		
+		<div class="content-bg">
+			<div style="margin: 0 auto; width:300px; text-align:center;">
+			{% if message %}
+				{{ message|safe }}<br />
+				<br />
+			{% endif %}
+			</div>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>ViaDNS | Dashboard</title>
+		
+		<link type="text/css" rel="stylesheet" href="static/stylesheet.css" />
+	</head>
+	<body>
+		<div class="nav-bg">
+			<div class="nav-content">
+				<div class="logo">ViaDNS</div>
+				<div class="acc-ctrls">
+					{{ user_info.username|safe }} | <a href="logout" class="logout">log out</a>
+				</div>
+			</div>
+		</div>
+		
+		<div class="content-bg">
+			<div class="dash">
+				<b>DNS Server IP Addresses:</b> {{ dns_server_ip|safe }}, 208.67.222.222<br />
+				<br />
+				<div style="padding: 10px 0 10px 0">
+					<b>Step 1:</b> Configure the DNS IP address provided above.
+					<hr />
+					<div style="text-align: center">
+						You may have to clear your web browser's cookies and cache then restart it for changes to take effect.
+					</div>
+				</div>
+				<div style="padding: 10px 0 10px 0">
+					<b>Step 2:</b> Enjoy some content.
+					<hr />
+					<div style="text-align: center">
+						<a href="https://netflix.com/" target="_blank">Netflix</a> | 
+						<a href="http://www.hulu.com/" target="_blank">Hulu</a> | 
+						<a href="https://www.pandora.com/" target="_blank">Pandora</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
